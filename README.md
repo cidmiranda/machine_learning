@@ -3,7 +3,7 @@
 ## Métodos preditivos
 
 ### Classificação (rótulos)
----
+
 #### Marketing direto
 #### Insatisfação de clientes
 #### Risco de crédito
@@ -14,7 +14,6 @@
 #### Previsão de doenças
 
 ### Regressão (números)
----
 
 #### Gastos propaganda -> valor de venda
 #### Temperatura, umidade e pressão do ar -> velocidade do vento
@@ -27,14 +26,14 @@
 ## Métodos Descritivos
 
 ### Associação
----
+
 #### Prateleiras de mercado
 #### Promoções com itens que são vendidos em conjunto
 #### Planejar catálogos de lojas e folhetos de promoções
 #### Controle de evasão em universidades
 
 ### Agrupamento
----
+
 #### Segmentação de mercado
 #### Agrupamento de documentos / notícias
 #### Agrupamento de produtos similares
@@ -42,7 +41,7 @@
 #### Análise de redes sociais
 
 ### Detecção de desvios (outliers)
----
+
 #### Fraude em cartão de crédito
 #### Intrusão em redes
 #### Uso de energia elétrica, água ou telefone
@@ -50,36 +49,36 @@
 #### Monitorar máquinas em um data center
 
 ### Padrões sequenciais
----
+
 #### Livrarias, lojas de equipamentos de atletismo, computadores
 #### Marketing para adquirir um novo produto
 #### Previsão de doenças
 #### Navegação em sites
 
 ### Sumarização
----
+
 #### São ouvintes do programa, homens na faixa de 25 a 35 anos, com nível superior e que trabalham na área de administração
 #### Segmentação de mercado
 
 ## Tipos de apredizagem de máquina
 
 ### Supervisionada
----
+
 #### Supervisor ajuda o algoritmo a aprender
 
 ### Não supervisionada
----
+
 #### Analisar automaticamente os dados (associação, agrupamento)
 #### Necessita análise para determinar o significado dos padrões encontradas
 
 ### Reforço
----
+
 #### Aprender com as interações com o ambiente (causa e efeito)
 
 ## Classificação - Pré-processamento com pandas e scikit-learn
 
 ### Variáveis
----
+
 ##### Numéricas
 ###### Contínua (números reais. temperatura, altura, peso, salário)
 ###### Discreta (conjuto de valores finitos (inteiros)) Contagem
@@ -88,7 +87,7 @@
 ###### Ordinal (Categorização sob uma ordenação. Tamanho P, M, G)
 
 ### Base de crédito
----
+
 ```bash
 pip -q install plotly
 pip -q install yellowbrick
