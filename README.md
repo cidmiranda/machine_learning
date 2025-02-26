@@ -105,7 +105,7 @@ base_credit = pd.read_csv('credit_data.csv')
 ```
 Visualizar os 5 primeiros registros
 ```bash
-print(base_credit)
+print(base_credit.head(5))
 ```
 | clientid |    income    |       age | loan        | default |
 |:---------|:------------:|----------:|-------------|--------:|
