@@ -1,7 +1,7 @@
 # Machine Learn
 
 ## Métodos preditivos
-=====================
+===========
 
 ### Classificação (rótulos)
 ---
@@ -26,7 +26,7 @@
 #### Valores anteriores -> valores de produtos
 
 ## Métodos Descritivos
-=====================
+===========
 ### Associação
 ---
 #### Prateleiras de mercado
@@ -63,7 +63,7 @@
 #### Segmentação de mercado
 
 ## Tipos de apredizagem de máquina
-==================================
+===========
 ### Supervisionada
 ---
 #### Supervisor ajuda o algoritmo a aprender
@@ -78,7 +78,7 @@
 #### Aprender com as interações com o ambiente (causa e efeito)
 
 ## Classificação - Pré-processamento com pandas e scikit-learn
-=====================
+===========
 
 ### Variáveis
 ---
