@@ -162,6 +162,7 @@ print(base_credit[base_credit['loan'] <= 1.377630])
 |:---------|:------------:|----------:|---------|--------:|
 | 866      | 28072.604355 | 54.142548 | 1.37763 |       0 |
 
+### Visualização dos dados
 Contagem de quantos registros existem em cada uma das classes.
 Classe 0, pagou o empréstimo e classe 1, não pagou o empréstimo.
 ```bash
@@ -203,3 +204,216 @@ grafico = px.scatter_matrix(base_credit, dimensions=['age', 'income', 'loan'], c
 grafico.show()
 ```
 ![Alt text](imgs/dispersao.png "Dispersão")
+
+### Tratamento de valores inconsistentes
+verificar clientes com idade menor que zero
+```bash
+print(base_credit.loc[base_credit['age'] < 0])
+```
+| clientid |    income    |        age | loan        | default |
+|:---------|:------------:|-----------:|-------------|--------:|
+| 16       | 50501.726689 | -28.218361 | 3977.287432 |       0 |    
+| 22       | 32197.620701 | -52.423280 | 4244.057136 |       0 |
+| 27       | 63287.038908 | -36.496976 | 9595.286289 |       0 |
+
+Podemos apagar a coluna inteira
+
+Vamos criar uma nova variável pra receber a nova base
+```bash
+base_credit2 = base_credit.drop('age', axis = 1)
+print(base_credit2)
+```
+| clientid |    income    | loan        | default |
+|:---------|:------------:|-------------|--------:|
+| 1        | 66155.925095 | 8106.532131 |       0 |
+| 2        | 34415.153966 | 6564.745018 |       0 |
+| 3        | 57317.170063 | 8020.953296 |       0 |
+| 4        | 42709.534201 | 6103.642260 |       0 |
+| 5        | 66952.688845 | 8770.099235 |       1 |
+...
+
+Podemos apagar os registros com valores inconsistentes
+
+Vamos criar uma nova variável pra receber a nova base
+```bash
+base_credit3 = base_credit.drop(base_credit[base_credit['age'] < 0].index)
+print(base_credit3)
+```
+| clientid |    income    |       age | loan        | default |
+|:---------|:------------:|----------:|-------------|--------:|
+| 1        | 66155.925095 | 59.017015 | 8106.532131 |       0 |
+| 2        | 34415.153966 | 48.117153 | 6564.745018 |       0 |
+| 3        | 57317.170063 | 63.108049 | 8020.953296 |       0 |
+| 4        | 42709.534201 | 45.751972 | 6103.642260 |       0 |
+| 5        | 66952.688845 | 18.584336 | 8770.099235 |       1 |
+...
+
+Podemos preencher os valores inconsistentes manualmente com as médias de idade
+
+```bash
+print(base_credit.mean())
+```
+clientid     1000.500000
+income      45331.600018
+age            40.807559
+loan         4444.369695
+default         0.141500
+dtype: float64
+
+```bash
+print(base_credit['age'].mean())
+```
+40.80755937840458
+
+Está calculando com as idades negativas, vamos corrigir
+```bash
+print(base_credit['age'][base_credit['age'] > 0].mean())
+```
+40.92770044906149
+
+Vamos atualizar os valores
+```bash
+print(base_credit.loc[base_credit['age'] < 0, 'age'] = 40.92 )
+```
+Realizar uma nova consulta
+```bash
+print(base_credit.loc[base_credit['age'] < 0])
+```
+Empty DataFrame
+Columns: [clientid, income, age, loan, default]
+Index: []
+
+```bash
+base_credit.loc[base_credit['age'] == 40.92]
+```
+| clientid |    income    |   age | loan        | default |
+|:---------|:------------:|------:|-------------|--------:|
+| 16       | 50501.726689 | 40.92 | 3977.287432 |       0 |    
+| 22       | 32197.620701 | 40.92 | 4244.057136 |       0 |
+| 27       | 63287.038908 | 40.92 | 9595.286289 |       0 |
+
+Histograma de idade
+```bash
+plt.hist(x = base_credit['age'])
+plt.show()
+```
+![Alt text](imgs/hist_age2.png "Histograma de idade")
+
+Gráfico de dispersão
+```bash
+grafico = px.scatter_matrix(base_credit, dimensions=['age', 'income', 'loan'], color = 'default')
+grafico.show()
+```
+![Alt text](imgs/dispersao2.png "Dispersão")
+
+### Tratamento de valores faltantes
+```bash
+print(base_credit.isnull())
+```
+![Alt text](imgs/isNull.png "Valores nulos")
+
+```bash
+print(base_credit.isnull().sum())
+```
+![Alt text](imgs/isNull2.png "Valores nulos")
+
+```bash
+print(base_credit.loc[pd.isnull(base_credit['age'])])
+```
+![Alt text](imgs/isNull3.png "Valores nulos")
+
+```bash
+base_credit['age'].fillna(base_credit['age'].mean(), inplace = True)
+print(base_credit.loc[pd.isnull(base_credit['age'])])
+```
+Empty DataFrame
+Columns: [clientid, income, age, loan, default]
+Index: []
+
+```bash
+print(base_credit.loc[base_credit['clientid'].isin([29, 31, 32])])
+```
+![Alt text](imgs/isin.png "Valores nulos")
+
+### Divisão entre previsores e classe
+Vamos usar iloc para pegar os valores de todas as linhas ":" da coluna 1 (income) até a coluna 3 (loan) "1:4"
+Previsores
+```bash
+X_credit = base_credit.iloc[:, 1:4].values
+print(X_credit)
+```
+![Alt text](imgs/iloc.png "iloc")
+
+Vamos pegar os valoes da classe, coluna 4 (default)
+Classes
+```bash
+y_credit = base_credit.iloc[:, 4].values
+print(y_credit)
+```
+![Alt text](imgs/iloc2.png "iloc")
+
+### Escalonamento dos atributos
+Evitar que o algoritmo interprete a importância dos atributos errado
+Pessoa com a menor renda
+```bash
+print(X_credit[:, 0].min())
+```
+![Alt text](imgs/min.png "min")
+Para as outras colunas, é só mudar o indice
+```bash
+print(X_credit[:, 1].min()) #idade
+print(X_credit[:, 2].min()) #divida
+```
+
+Pessoa com a maior renda
+```bash
+print(X_credit[:, 0].max())
+```
+![Alt text](imgs/max.png "max")
+Para as outras colunas, é só mudar o indice
+```bash
+print(X_credit[:, 1].max()) #idade
+print(X_credit[:, 2].max()) #divida
+```
+Deixar os valores na mesma escala
+
+Padronização (Standardisation)
+```bash
+x = x - media(x) / desvio padrão(x)
+```
+Normalização (Normalization)
+```bash
+x = x - minimo(x) / maximo(x) - minimo(x)
+```
+Usando padronização
+```bash
+scaler_credit = StandardScaler()
+X_credit = scaler_credit.fit_transform(X_credit)
+print(X_credit[:,0].min(), X_credit[:,1].min(), X_credit[:,2].min())
+```
+![Alt text](imgs/scaler_after.png "deis")
+Antes da transformação
+![Alt text](imgs/scaler_before.png "antes")
+
+### Base de dados do censo
+Outras bases: http://archive.ics.uci.edu/ml/datasets/adult
+
+```bash
+base_census = pd.read_csv('census.csv')
+print(base_census)
+```
+![Alt text](imgs/census.png "censo")
+
+Estatísticas
+```bash
+print(base_census.describe())
+```
+![Alt text](imgs/desc_census.png "censo")
+
+Existe valores faltantes?
+```bash
+print(base_census.isnull().sum())
+```
+![Alt text](imgs/null_census.png "censo")
+
+Não precisamos ajustar os dados da base de dados
