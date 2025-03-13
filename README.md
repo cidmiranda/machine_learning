@@ -417,3 +417,30 @@ print(base_census.isnull().sum())
 ![Alt text](imgs/null_census.png "censo")
 
 Não precisamos ajustar os dados da base de dados
+
+### Visualização dos dados
+Visualizar os dados da nossa classe
+```bash
+print(np.unique(base_census['income'], return_counts=True))
+```
+![Alt text](imgs/classe_count.png "Visualização")
+```bash
+sns.countplot(x = base_census['income'])
+plt.show()
+```
+![Alt text](imgs/plot_income.png "Visualização")
+```bash
+grafico = px.treemap(base_census, path=['workclass'])
+grafico.show()
+```
+![Alt text](imgs/plot_workclass.png "Visualização")
+```bash
+grafico = px.treemap(base_census, path=['workclass', 'age'])
+grafico.show()
+```
+![Alt text](imgs/plot_workclass2.png "Visualização")
+```bash
+grafico = px.parallel_categories(base_census, dimensions=['occupation', 'relationship'])
+grafico.show()
+```
+![Alt text](imgs/plot_relation.png "Visualização")
