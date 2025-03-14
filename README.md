@@ -529,4 +529,229 @@ print(X_census.shape)
 
 Agora temos 108 colunas na base
 
-### Escalonamento dos atributos
+### Escalonamento dos atributos (evitar que o algoritmo interprete erroneamente o valor da variável muito mais alto do que outra variável, como peso no cálculo)
+Antes
+```bash
+print(X_census[0])
+```
+![Alt text](imgs/escala1.png "escalonamento")
+Depois
+```bash
+scaler_census = StandardScaler()
+X_census = scaler_census.fit_transform(X_census)
+print(X_census[0])
+```
+![Alt text](imgs/escala2.png "escalonamento")
+
+### Introdução a avaliação de algoritmos
+O algorítmo avalia os dados e gera um modelo baseado nos dados
+Divisão da base entre teinamento e teste. Não podem ter os mesmos dados para não enganar o algorítmo
+
+Ex: Naive Bayes
+
+Gera tabela de probabilidades baseado no treinamento. 
+Submente os registros de teste ao algorítmo para comparar com o treinamento.
+Baseado nos acertos, é calculada a taxa de acerto: número de acertos / número de registros
+0.75 * 100 = 75%
+
+### Base de treinamento e teste
+
+Para realizar a divisão da base de dados, executamos o comando abaixo, o mais importante é o random_state, que garante que os dados serão gerados sempre iguais, os mesmo registros em treinamento e teste
+O parâmetro test_size é o tamanho da base dados de teste, 25%, no comando abaixo (0.25)
+Base de crédito
+```bash
+X_credit_treinamento, X_credit_teste, y_credit_treinamento, y_credit_teste = train_test_split(X_credit, y_credit, test_size=0.25, random_state=0)
+print(X_credit_treinamento.shape)
+```
+![Alt text](imgs/div1.png "Divisão bases")
+Base do censo
+```bash
+X_census_treinamento, X_census_teste, y_census_treinamento, y_census_teste = train_test_split(X_census, y_census, test_size=0.15, random_state=0)
+print(X_census_treinamento.shape, y_census_treinamento.shape)
+print(X_census_teste.shape, y_census_teste.shape)
+```
+![Alt text](imgs/div2.png "Divisão bases")
+A quantidade de registros na na base de teste e teinamento, precisam estar iguais (27676 = 27676, 4885 = 4885)
+
+### Salvar as bases de dados
+Vamos usar o pickle
+```bash
+with open('credit.pkl', mode='wb') as f:
+    pickle.dump([X_credit_treinamento, y_credit_treinamento, X_credit_teste, y_credit_teste], f)
+
+with open('census.pkl', mode='wb') as f:
+    pickle.dump([X_census_treinamento, y_census_treinamento, X_census_teste, y_census_teste], f)
+```
+Vai criar dois aquivos, credit.pkl e census.pkl.
+
+Para mais exemplos sobre pré-processamento de bases de dados, consulte: https://scikit-learn.org/stable/modules/preprocessing.html
+
+E também:
+
+Livro Python Machine Learning de Sebastian Raschka: o capítulo 4 do livro é sobre a construção de boas bases de dados utilizando técnicas de pré-processamento
+
+Livro Machine Learning with Python de Chris Albon: os capítulos iniciais do livro apresentam uma variedade grande de técnicas de pré-processamento
+
+Capítulo Data Quality de Tamraparni Dasu e Theodore Johnson da série de livros Wiley Series in Probability and Statistics: ótimo complemento depois da aprendizagem das técnicas de pré-processamento
+
+## Aprendizagem bayesiana
+Em teoria das probabilidades e estatística, o teorema de Bayes (alternativamente, a lei de Bayes ou a regra de Bayes) descreve a probabilidade de um evento acontecer, com base em um conhecimento que pode estar relacionado ao evento.
+
+### Introdução
+Baseado em probabilidade, principalmente texto. (Teorema de Bayes)
+Exemplos:
+
+Filtros de spam, mineração de emoções, separação de documentos
+
+Ele gera uma tabela de probabilidades
+
+Vantagens: Rápido, Simplicidade de interpretação, Trabalha com altas dimensões, Boas previsões em bases pequenas
+Desvantagens: Combinação de características (atributos independentes) - cada par de características são independentes - nem sempre é verdade
+
+### Base risco de crédito
+
+```bash
+base_risco_credito = pd.read_csv('risco_credito.csv')
+print(base_risco_credito)
+```
+![Alt text](imgs/bay1.png "Bayes")
+
+Divisão previsores e classe
+```bash
+X_risco_credito = base_risco_credito.iloc[:, 0:4].values
+y_risco_credito = base_risco_credito.iloc[:, 4].values
+label_encoder_historia = LabelEncoder()
+label_encoder_divida = LabelEncoder()
+label_encoder_garantia = LabelEncoder()
+label_encoder_renda = LabelEncoder()
+X_risco_credito[:,0] = label_encoder_historia.fit_transform(X_risco_credito[:,0])
+X_risco_credito[:,1] = label_encoder_divida.fit_transform(X_risco_credito[:,1])
+X_risco_credito[:,2] = label_encoder_garantia.fit_transform(X_risco_credito[:,2])
+X_risco_credito[:,3] = label_encoder_renda.fit_transform(X_risco_credito[:,3])
+```
+Como a base é pequna não vamos aplicar o OneHotEncoder
+
+Salvado a base
+```bash
+with open('risco_credito.pkl', mode='wb') as f:
+    pickle.dump([X_risco_credito, y_risco_credito], f)
+```
+Criando o algorítimo
+```bash
+naive_risco_credito = GaussianNB()
+naive_risco_credito.fit(X_risco_credito, y_risco_credito)
+
+# história boa (0), dívida alta (0), garantias nenhuma (1), renda > 35 (2)
+# história ruim (2), divida alta (0), garantias adequada (0), renda < 15 (0)
+
+previsao = naive_risco_credito.predict([[0,0,1,2],[2,0,0,0]])
+print(previsao)
+```
+![Alt text](imgs/bay2.png "Bayes")
+
+```bash
+print(naive_risco_credito.classes_)
+print(naive_risco_credito.class_count_)
+print(naive_risco_credito.class_prior_)
+```
+![Alt text](imgs/bay3.png "Bayes")
+
+### Base crédito
+```bash
+with open('credit.pkl', mode='rb') as f:
+    X_credit_treinamento, y_credit_treinamento, X_credit_teste, y_credit_teste = pickle.load(f)
+print(X_credit_treinamento.shape, y_credit_treinamento.shape)
+print(X_credit_teste.shape, y_credit_teste.shape)
+```
+![Alt text](imgs/bay4.png "Bayes")
+
+Treinando e executando o algorítmo
+```bash
+naive_credit_data = GaussianNB()
+naive_credit_data.fit(X_credit_treinamento, y_credit_treinamento)
+previsoes = naive_credit_data.predict(X_credit_teste)
+print(previsoes)
+```
+![Alt text](imgs/bay5.png "Bayes")
+Comparando
+```bash
+print(y_credit_teste)
+```
+![Alt text](imgs/bay6.png "Bayes")
+Comparando com o sklearn
+```bash
+print(accuracy_score(y_credit_teste, previsoes))
+```
+![Alt text](imgs/bay7.png "Bayes")
+O algorítmo acertou 93%
+
+Matriz de confusão
+```bash
+print(confusion_matrix(y_credit_teste, previsoes))
+```
+![Alt text](imgs/bay8.png "Bayes")
+428 pagam e foram classificados como pagam
+
+8 pagam e foram classificados como não pagam
+
+23 clientes não pagam e foram classificados como pagam
+
+41 clientes não pagam e foram classificados como não pagam
+
+Matriz de confusão yellowbrick
+```bash
+cm = ConfusionMatrix(naive_credit_data)
+cm.fit(X_credit_treinamento, y_credit_treinamento)
+cm.score(X_credit_teste, y_credit_teste)
+plt.show()
+```
+![Alt text](imgs/bay9.png "Bayes")
+Relatório de classificação
+```bash
+print(classification_report(y_credit_teste, previsoes))
+```
+![Alt text](imgs/bay10.png "Bayes")
+
+### Base censo
+```bash
+with open('census.pkl', mode='rb') as f:
+    X_census_treinamento, y_census_treinamento, X_census_teste, y_census_teste = pickle.load(f)
+print(X_census_treinamento.shape, y_census_treinamento.shape)
+print(X_census_teste.shape, y_census_teste.shape)
+```
+![Alt text](imgs/bay11.png "Bayes")
+
+Treinando e executando o algorítmo
+```bash
+naive_census_data = GaussianNB()
+naive_census_data.fit(X_census_treinamento, y_census_treinamento)
+previsoes = naive_census_data.predict(X_census_teste)
+print(previsoes)
+print(y_census_teste)
+```
+![Alt text](imgs/bay12.png "Bayes")
+O treinamento errou a maioria das previsões
+
+Acuracidade
+```bash
+print(accuracy_score(y_census_teste, previsoes))
+```
+![Alt text](imgs/bay13.png "Bayes")
+
+Taxa muito baixa. O fato de termos apenas duas classes, influencia nesse resultado
+Se não executar o escalonamento, pode chegar a 70% de acuracidade, no caso Bayes.
+
+Matriz de confusão
+```bash
+cm = ConfusionMatrix(naive_census_data)
+cm.fit(X_census_treinamento, y_census_treinamento)
+cm.score(X_census_teste, y_census_teste)
+plt.show()
+```
+![Alt text](imgs/bay14.png "Bayes")
+
+Relatório de classificação
+```bash
+print(classification_report(y_census_teste, previsoes))
+```
+![Alt text](imgs/bay15.png "Bayes")
