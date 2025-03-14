@@ -755,3 +755,35 @@ Relatório de classificação
 print(classification_report(y_census_teste, previsoes))
 ```
 ![Alt text](imgs/bay15.png "Bayes")
+
+## Aprendizagem por árvores de decisão
+Cálculo da entropia. Verifica o quão organizado estão os dados  
+![Alt text](imgs/entropy.png "Bayes")
+```bash
+Risco
+Alto = 6/14  
+Moderado = 3/14  
+Baixo = 5/14
+
+E(s) = -6/14 * log(6/14;2) - 3/14 * log(3/14;2) - 5/14 * log(5/14;2) = 1,53
+```
+Cálculo do ganho de informação  
+![Alt text](imgs/gain.png "Bayes")
+```bash
+Historia de credito
+
+Boa (5/14) -> Alto (1/5), Moderado (1/5), Baixo (3/5)
+Desconhecida (5/14) -> Alto (2/5), Moderado (1/5), Baixo (2/5)
+Ruim (4/14) -> Alto (3/4), Moderado (1/4), Baixo (0)
+
+E(s) = -1/5 * log(1/5;2) - 1/5 * log(1/5;2) - 3/5 * log(3/5;2) = 1,37
+E(s) = -2/5 * log(2/5;2) - 1/5 * log(1/5;2) - 2/5 * log(2/5;2)= 1,52
+E(s) = -3/4 * log(3/4;2) - 1/4 * log(1/4;2) - 0 * log(0;2) = 0,81
+
+Ganho(Historia) = 1,53 - (5/14 * 1,37) - (5/14 * 1,52) - (4/14 * 0,81) = 0,26
+```
+
+```bash
+print(classification_report(y_census_teste, previsoes))
+```
+![Alt text](imgs/bay.png "Bayes")
