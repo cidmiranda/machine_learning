@@ -757,7 +757,9 @@ print(classification_report(y_census_teste, previsoes))
 ![Alt text](imgs/bay15.png "Bayes")
 
 ## Aprendizagem por árvores de decisão
+![Alt text](imgs/tree.png "Tree")
 Cálculo da entropia. Verifica o quão organizado estão os dados  
+Entropia geral
 ![Alt text](imgs/entropy.png "Bayes")
 ```bash
 Risco
@@ -767,11 +769,13 @@ Baixo = 5/14
 
 E(s) = -6/14 * log(6/14;2) - 3/14 * log(3/14;2) - 5/14 * log(5/14;2) = 1,53
 ```
+Como saber o topo da árvore?
+Calcular o gain de cada atributo
+
 Cálculo do ganho de informação  
 ![Alt text](imgs/gain.png "Bayes")
 ```bash
 Historia de credito
-
 Boa (5/14) -> Alto (1/5), Moderado (1/5), Baixo (3/5)
 Desconhecida (5/14) -> Alto (2/5), Moderado (1/5), Baixo (2/5)
 Ruim (4/14) -> Alto (3/4), Moderado (1/4), Baixo (0)
@@ -784,6 +788,61 @@ Ganho(Historia) = 1,53 - (5/14 * 1,37) - (5/14 * 1,52) - (4/14 * 0,81) = 0,26
 ```
 
 ```bash
-print(classification_report(y_census_teste, previsoes))
+Dívida
+Alta (5/14) -> Alto (4/7), Moderado (1/7), Baixo (2/7)
+Baixa (5/14) -> Alto (2/7), Moderado (2/7), Baixo (3/7)
+
+E(s) = -4/7 * log(4/7;2) - 1/7 * log(1/7;2) - 2/7 * log(2/7;2) = 1,38
+E(s) = -2/7 * log(2/7;2) - 2/7 * log(2/7;2) - 3/7 * log(3/7;2)= 1,56
+
+Ganho(Divida) = 1,53 - (7/14 * 1,38) - (7/14 * 1,56) = 0,06
 ```
-![Alt text](imgs/bay.png "Bayes")
+
+```bash
+Garantias
+Nenhuma (11/14) -> Alto (6/11), Moderado (2/11), Baixo (3/11)
+Adequada (3/14) -> Alto (0), Moderado (1/3), Baixo (2/3)
+
+E(s) = -6/11 * log(6/11;2) - 2/11 * log(2/11;2) - 3/11 * log(3/11;2) = 1,44
+E(s) = -0 * log(0;2) - 1/3 * log(1/3;2) - 2/3 * log(2/3;2) = 0,92
+
+Ganho(Garantias) = 1,53 - (11/14 * 1,44) - (3/14 * 0,92) = 0,20
+```
+
+```bash
+Renda Anual
+<15     (3/14) -> Alto (3/3), Moderado (0), Baixo (0)
+>=15<35 (4/14) -> Alto (2/4), Moderado (2/4), Baixo (0)
+>35     (7/14) -> Alto (1/7), Moderado (1/7), Baixo (5/7)
+
+E(s) = -3/3 * log(3/3;2) - 0 * log(0;2) - 0 * log(0;2) = 0,00
+E(s) = -2/4 * log(2/4;2) - 2/4 * log(2/4;2) - 0 * log(0;2) = 1,00 
+E(s) = -1/7 * log(1/7;2) - 1/7 * log(1/7;2) - 5/7 * log(5/7;2)= 1,15
+
+Ganho(Garantias) = 1,53 - (3/14 * 0) - (4/14 * 1,00) - (7/14 * 1,15) = 0,66
+```
+```bash
+História de crédito = 0.26
+Dívida = 0,06
+Garantias = 0,20
+Renda = 0,66
+```
+O atributo renda, teve o melhor desempenho, logo, será escolhido como o topo da árvore de decisão  
+
+Vantagens:
+* Fácil interpretação
+* Não precisa normalização ou normalização
+* Rápido para classificar novos registros
+
+Desvantagens:  
+* Geração de árvores muito complexas
+* Pequenas mudanças nos dados pode mudar a árvore (poda pode ajudar)
+* Problema NP-completo para construir a árvore  
+
+Eram muito populares em meados dos anos 90. Hoje temos algorítmos melhores, como redes neurais, SVM, KNN  
+O Random Forest melhoram o desempenho  
+CART - classification and regression trees  
+
+
+```bash
+```
