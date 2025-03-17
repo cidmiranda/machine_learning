@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import plotly.express as px
 import pickle
 
+from sklearn import tree
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import LabelEncoder
@@ -13,6 +14,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB
 from yellowbrick.classifier import ConfusionMatrix
+from sklearn.tree import DecisionTreeClassifier
 
 base_credit = pd.read_csv('credit_data.csv')
 
@@ -170,3 +172,15 @@ cm.fit(X_census_treinamento, y_census_treinamento)
 cm.score(X_census_teste, y_census_teste)
 #plt.show()
 #print(classification_report(y_census_teste, previsoes))
+with open('risco_credito.pkl', mode='rb') as f:
+    X_risco_credito, y_risco_credito = pickle.load(f)
+#print(X_risco_credito)
+#print(y_risco_credito)
+arvore_risco_credito = DecisionTreeClassifier(criterion='entropy')
+arvore_risco_credito.fit(X_risco_credito, y_risco_credito)
+previsores = ['história','dívida','garantias','renda']
+figura, eixos = plt.subplots(nrows=1, ncols=1, figsize=[10,10])
+tree.plot_tree(arvore_risco_credito, feature_names=previsores, class_names=arvore_risco_credito.classes_, filled=True)
+#plt.show()
+previsoes = arvore_risco_credito.predict([[0,0,1,2],[2,0,0,0]])
+print(previsoes)

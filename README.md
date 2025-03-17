@@ -843,6 +843,51 @@ Eram muito populares em meados dos anos 90. Hoje temos algorítmos melhores, com
 O Random Forest melhoram o desempenho  
 CART - classification and regression trees  
 
+## Árvores de decisão - Base risco crédito
 
 ```bash
+with open('risco_credito.pkl', mode='rb') as f:
+    X_risco_credito, y_risco_credito = pickle.load(f)
+print(X_risco_credito)
 ```
+![Alt text](imgs/tree2.png "Bayes")
+
+```bash
+print(y_risco_credito)
+```
+![Alt text](imgs/tree3.png "Bayes")
+```bash
+print(tree.plot_tree(arvore_risco_credito))
+plt.show()
+```
+```bash
+[Text(0.5, 0.9, 'x[3] <= 1.5\nentropy = 1.531\nsamples = 14\nvalue = [6, 5, 3]'), 
+Text(0.2, 0.7, 'x[3] <= 0.5\nentropy = 0.863\nsamples = 7\nvalue = [5, 0, 2]'), 
+Text(0.35, 0.8, 'True  '), Text(0.1, 0.5, 'entropy = 0.0\nsamples = 3\nvalue = [3, 0, 0]'), 
+Text(0.3, 0.5, 'x[0] <= 0.5\nentropy = 1.0\nsamples = 4\nvalue = [2, 0, 2]'), 
+Text(0.2, 0.3, 'entropy = 0.0\nsamples = 1\nvalue = [0, 0, 1]'), 
+Text(0.4, 0.3, 'x[1] <= 0.5\nentropy = 0.918\nsamples = 3\nvalue = [2, 0, 1]'), 
+Text(0.3, 0.1, 'entropy = 0.0\nsamples = 2\nvalue = [2, 0, 0]'), 
+Text(0.5, 0.1, 'entropy = 0.0\nsamples = 1\nvalue = [0, 0, 1]'), 
+Text(0.8, 0.7, 'x[0] <= 1.5\nentropy = 1.149\nsamples = 7\nvalue = [1, 5, 1]'), 
+Text(0.65, 0.8, '  False'), 
+Text(0.7, 0.5, 'x[0] <= 0.5\nentropy = 0.65\nsamples = 6\nvalue = [1, 5, 0]'), 
+Text(0.6, 0.3, 'entropy = 0.0\nsamples = 3\nvalue = [0, 3, 0]'), 
+Text(0.8, 0.3, 'x[2] <= 0.5\nentropy = 0.918\nsamples = 3\nvalue = [1, 2, 0]'), 
+Text(0.7, 0.1, 'entropy = 0.0\nsamples = 1\nvalue = [0, 1, 0]'), 
+Text(0.9, 0.1, 'entropy = 1.0\nsamples = 2\nvalue = [1, 1, 0]'), 
+Text(0.9, 0.5, 'entropy = 0.0\nsamples = 1\nvalue = [0, 0, 1]')]
+```
+![Alt text](imgs/tree4.png "Bayes")
+```bash
+previsores = ['história','dívida','garantias','renda']
+figura, eixos = plt.subplots(nrows=1, ncols=1, figsize=[10,10])
+tree.plot_tree(arvore_risco_credito, feature_names=previsores, class_names=arvore_risco_credito.classes_, filled=True)
+plt.show()
+```
+![Alt text](imgs/tree7.png "Bayes")
+```bash
+previsoes = arvore_risco_credito.predict([[0,0,1,2],[2,0,0,0]])
+print(previsoes)
+```
+![Alt text](imgs/tree8.png "Bayes")
