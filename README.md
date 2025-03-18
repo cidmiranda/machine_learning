@@ -760,7 +760,7 @@ print(classification_report(y_census_teste, previsoes))
 ![Alt text](imgs/tree.png "Tree")
 Cálculo da entropia. Verifica o quão organizado estão os dados  
 Entropia geral
-![Alt text](imgs/entropy.png "Bayes")
+![Alt text](imgs/entropy.png "Tree")
 ```bash
 Risco
 Alto = 6/14  
@@ -773,7 +773,7 @@ Como saber o topo da árvore?
 Calcular o gain de cada atributo
 
 Cálculo do ganho de informação  
-![Alt text](imgs/gain.png "Bayes")
+![Alt text](imgs/gain.png "Tree")
 ```bash
 Historia de credito
 Boa (5/14) -> Alto (1/5), Moderado (1/5), Baixo (3/5)
@@ -850,12 +850,12 @@ with open('risco_credito.pkl', mode='rb') as f:
     X_risco_credito, y_risco_credito = pickle.load(f)
 print(X_risco_credito)
 ```
-![Alt text](imgs/tree2.png "Bayes")
+![Alt text](imgs/tree2.png "Tree")
 
 ```bash
 print(y_risco_credito)
 ```
-![Alt text](imgs/tree3.png "Bayes")
+![Alt text](imgs/tree3.png "Tree")
 ```bash
 print(tree.plot_tree(arvore_risco_credito))
 plt.show()
@@ -878,16 +878,65 @@ Text(0.7, 0.1, 'entropy = 0.0\nsamples = 1\nvalue = [0, 1, 0]'),
 Text(0.9, 0.1, 'entropy = 1.0\nsamples = 2\nvalue = [1, 1, 0]'), 
 Text(0.9, 0.5, 'entropy = 0.0\nsamples = 1\nvalue = [0, 0, 1]')]
 ```
-![Alt text](imgs/tree4.png "Bayes")
+![Alt text](imgs/tree4.png "Tree")
 ```bash
 previsores = ['história','dívida','garantias','renda']
 figura, eixos = plt.subplots(nrows=1, ncols=1, figsize=[10,10])
 tree.plot_tree(arvore_risco_credito, feature_names=previsores, class_names=arvore_risco_credito.classes_, filled=True)
 plt.show()
 ```
-![Alt text](imgs/tree7.png "Bayes")
+![Alt text](imgs/tree7.png "Tree")
 ```bash
 previsoes = arvore_risco_credito.predict([[0,0,1,2],[2,0,0,0]])
 print(previsoes)
 ```
-![Alt text](imgs/tree8.png "Bayes")
+![Alt text](imgs/tree8.png "Tree")
+
+## Árvores de decisão - Base crédito
+```bash
+with open('credit.pkl', mode='rb') as f:
+    X_credit_treinamento, y_credit_treinamento, X_credit_teste, y_credit_teste = pickle.load(f)
+```
+```bash
+print(X_credit_treinamento.shape, y_credit_treinamento.shape)
+print(X_credit_teste.shape, y_credit_teste.shape)
+```
+![Alt text](imgs/tree9.png "Tree")
+```bash
+arvore_credito = DecisionTreeClassifier(criterion='entropy', random_state=0)
+arvore_credito.fit(X_credit_treinamento, y_credit_treinamento)
+previsoes = arvore_credito.predict(X_credit_teste)
+print(previsoes)
+```
+![Alt text](imgs/tree10.png "Tree")
+```bash
+print(y_credit_teste)
+```
+![Alt text](imgs/tree11.png "Tree")
+```bash
+accuracy = accuracy_score(y_credit_teste, previsoes)
+print(accuracy)
+```
+![Alt text](imgs/tree12.png "Tree")
+```bash
+cm = ConfusionMatrix(arvore_credito)
+cm.fit(X_credit_treinamento, y_credit_treinamento)
+cm.score(X_credit_teste, y_credit_teste)
+plt.show()
+```
+![Alt text](imgs/tree13.png "Tree")
+```bash
+print(classification_report(y_credit_teste, previsoes))
+```
+![Alt text](imgs/tree14.png "Tree")
+```bash
+previsores = ['income','age','loan']
+class_names = ['0','1']
+fig, axes = plt.subplots(nrows=1, ncols=1, figsize=(20,20))
+class_array = [str(i) for i in arvore_credito.classes_]
+print(class_array)
+tree.plot_tree(arvore_credito, feature_names=previsores, class_names=class_array, filled=True)
+fig.savefig('arvore_credit.png')
+plt.show()
+```
+![Alt text](arvore_credit.png "Tree")
