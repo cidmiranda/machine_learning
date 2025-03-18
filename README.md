@@ -1,4 +1,4 @@
-# Machine Learn
+# Machine Learning
 
 ## Métodos preditivos
 
@@ -843,7 +843,7 @@ Eram muito populares em meados dos anos 90. Hoje temos algorítmos melhores, com
 O Random Forest melhoram o desempenho  
 CART - classification and regression trees  
 
-## Árvores de decisão - Base risco crédito
+### Árvores de decisão - Base risco crédito
 
 ```bash
 with open('risco_credito.pkl', mode='rb') as f:
@@ -892,7 +892,7 @@ print(previsoes)
 ```
 ![Alt text](imgs/tree8.png "Tree")
 
-## Árvores de decisão - Base crédito
+### Árvores de decisão - Base crédito
 ```bash
 with open('credit.pkl', mode='rb') as f:
     X_credit_treinamento, y_credit_treinamento, X_credit_teste, y_credit_teste = pickle.load(f)
@@ -940,3 +940,67 @@ fig.savefig('arvore_credit.png')
 plt.show()
 ```
 ![Alt text](arvore_credit.png "Tree")
+
+### Árvores de decisão - Base censo
+```bash
+with open('census.pkl', mode='rb') as f:
+    X_census_treinamento, y_census_treinamento, X_census_teste, y_census_teste = pickle.load(f)
+
+arvore_census = DecisionTreeClassifier(criterion='entropy', random_state=0)
+arvore_census.fit(X_census_treinamento, y_census_treinamento)
+previsoes = arvore_census.predict(X_census_teste)
+print(previsoes)
+```
+![Alt text](imgs/tree15.png "Tree")
+```bash
+print(y_census_teste)
+```
+![Alt text](imgs/tree16.png "Tree")
+```bash
+accuracy = accuracy_score(y_census_teste, previsoes)
+print(accuracy)
+```
+![Alt text](imgs/tree17.png "Tree")
+```bash
+cm = ConfusionMatrix(arvore_census)
+cm.fit(X_census_treinamento, y_census_treinamento)
+cm.score(X_census_teste, y_census_teste)
+plt.show()
+```
+![Alt text](imgs/tree18.png "Tree")
+```bash
+print(classification_report(y_census_teste, previsoes))
+```
+![Alt text](imgs/tree19.png "Tree")
+
+### Random forest
+Ensemble learning (aprendizagem em conjunto)
+* Usar média (regressão) ou votos da maioria (classificação) para dar a resposta final
+
+Escolhe de forma aleatória k, atributos para comparação da métrica de pureza / impureza (impureza de gini / entropia)
+
+```bash
+with open('credit.pkl', mode='rb') as f:
+    X_credit_treinamento, y_credit_treinamento, X_credit_teste, y_credit_teste = pickle.load(f)
+random_forest_credit = RandomForestClassifier(n_estimators=10, criterion='entropy', random_state=0)
+random_forest_credit.fit(X_credit_treinamento, y_credit_treinamento)
+previsoes = random_forest_credit.predict(X_credit_teste)
+print(previsoes)
+print(y_credit_teste)
+```
+![Alt text](imgs/tree20.png "Tree")
+
+```bash
+accuracy = accuracy_score(y_credit_teste, previsoes)
+print(accuracy)
+```
+![Alt text](imgs/tree21.png "Tree")
+
+## Aprendizado por regras
+Teoria sobre indução de regras - algoritmo OneR e PRISM  
+Árvores de decisão x regras  
+Regras(CN2) com orange  
+
+## Algoritmo OneR
+* Testar coisas simples primeiro
+* Um atributo faz todo o trabalho

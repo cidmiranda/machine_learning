@@ -6,6 +6,7 @@ import plotly.express as px
 import pickle
 
 from sklearn import tree
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import LabelEncoder
@@ -200,11 +201,35 @@ arvore_credito.fit(X_credit_treinamento, y_credit_treinamento)
 #cm.score(X_credit_teste, y_credit_teste)
 #plt.show()
 #print(classification_report(y_credit_teste, previsoes))
-previsores = ['income','age','loan']
-class_names = ['0','1']
-fig, axes = plt.subplots(nrows=1, ncols=1, figsize=(20,20))
-class_array = [str(i) for i in arvore_credito.classes_]
-print(class_array)
-tree.plot_tree(arvore_credito, feature_names=previsores, class_names=class_array, filled=True)
-fig.savefig('arvore_credit.png')
-plt.show()
+#previsores = ['income','age','loan']
+#class_names = ['0','1']
+#fig, axes = plt.subplots(nrows=1, ncols=1, figsize=(20,20))
+#class_array = [str(i) for i in arvore_credito.classes_]
+#print(class_array)
+#tree.plot_tree(arvore_credito, feature_names=previsores, class_names=class_array, filled=True)
+#fig.savefig('arvore_credit.png')
+#plt.show()
+with open('census.pkl', mode='rb') as f:
+    X_census_treinamento, y_census_treinamento, X_census_teste, y_census_teste = pickle.load(f)
+
+arvore_census = DecisionTreeClassifier(criterion='entropy', random_state=0)
+arvore_census.fit(X_census_treinamento, y_census_treinamento)
+#previsoes = arvore_census.predict(X_census_teste)
+#print(previsoes)
+#print(y_census_teste)
+accuracy = accuracy_score(y_census_teste, previsoes)
+#print(accuracy)
+cm = ConfusionMatrix(arvore_census)
+cm.fit(X_census_treinamento, y_census_treinamento)
+cm.score(X_census_teste, y_census_teste)
+#plt.show()
+#print(classification_report(y_census_teste, previsoes))
+with open('credit.pkl', mode='rb') as f:
+    X_credit_treinamento, y_credit_treinamento, X_credit_teste, y_credit_teste = pickle.load(f)
+random_forest_credit = RandomForestClassifier(n_estimators=40, criterion='entropy', random_state=0)
+random_forest_credit.fit(X_credit_treinamento, y_credit_treinamento)
+previsoes = random_forest_credit.predict(X_credit_teste)
+#print(previsoes)
+#print(y_credit_teste)
+accuracy = accuracy_score(y_credit_teste, previsoes)
+print(accuracy)
