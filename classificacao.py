@@ -1,3 +1,4 @@
+import Orange.classification
 import pandas as pd
 import numpy as np
 import seaborn as sns
@@ -235,4 +236,10 @@ previsoes = random_forest_credit.predict(X_credit_teste)
 #accuracy = accuracy_score(y_credit_teste, previsoes)
 #print(accuracy)
 base_risco_credito = Orange.data.Table('risco_credito_regras.csv')
-#print(base_risco_credito.head())
+print(base_risco_credito)
+cn2 = Orange.classification.rules.CN2Learner()
+regras_risco_credito = cn2(base_risco_credito)
+for regras in regras_risco_credito.rule_list:
+    print(regras)
+previsoes = regras_risco_credito([['boa', 'alta', 'nenhuma', 'acima_35'], ['ruim', 'alta', 'adequada', '0_15']])
+print(previsoes)

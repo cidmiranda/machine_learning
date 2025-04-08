@@ -1001,6 +1001,102 @@ Teoria sobre indução de regras - algoritmo OneR e PRISM
 Árvores de decisão x regras  
 Regras(CN2) com orange  
 
-### Base de crédito  
+### Base de risco de crédito  
+
+```bash
+pip install Orange3
+import Orange
+base_risco_credito = Orange.data.Table('risco_credito_regras.csv')
+print(base_risco_credito)
+```
+![Alt text](imgs/regras1.png "Tree")
+
+```bash
+cn2 = Orange.classification.rules.CN2Learner()
+regras_risco_credito = cn2(base_risco_credito)
+for regras in regras_risco_credito.rule_list:
+    print(regras)
+```
+![Alt text](imgs/regras2.png "Tree")
+
+# história boa, dívida alta, garantias nenhuma, renda > 35
+# história ruim, dívida alta, garantias adequada, renda < 15
+```bash
+previsoes = regras_risco_credito([['boa', 'alta', 'nenhuma', 'acima_35'], ['ruim', 'alta', 'adequada', '0_15']])
+print(previsoes)
+array([1, 0])
+
+print(base_risco_credito.domain.class_var.values)
+('alto', 'baixo', 'moderado')
+
+for i in previsoes:
+  #print(i)
+  print(base_risco_credito.domain.class_var.values[i])
+
+baixo
+alto
+```
+### Base de crédito data
+
+```bash
+base_credit = Orange.data.Table('risco_credito_regras.csv')
+print(base_credit.domain)
+[income, age, loan | default]
+
+base_dividida = Orange.evaluation.testing.sample(base_credit, n = 0.25)
+base_treinamento = base_dividida[1]
+base_teste = base_dividida[0]
+print(len(base_treinamento), len(base_teste))
+(1500, 500)
+
+cn2 = Orange.classification.rules.CN2Learner()
+regras_credit = cn2(base_treinamento)
+for regras in regras_credit.rule_list:
+  print(regras)
+
+IF age>=34.9257164876908 THEN default=0 
+IF loan<=2507.64970973955 AND income>=20145.9885970689 THEN default=0 
+IF income<=31702.3342987522 AND loan>=3665.88089899456 THEN default=1 
+IF loan>=7660.34617051509 AND loan>=9601.375482171099 THEN default=1 
+IF loan>=7660.34617051509 AND loan>=9595.28628892989 THEN default=0 
+IF loan>=7660.34617051509 AND age>=21.4227129220963 THEN default=1 
+IF income<=22925.8120805025 AND age>=34.7410444347188 THEN default=0 
+IF income<=24857.6948815025 AND age>=26.382710393052502 THEN default=1 
+IF loan<=5898.0008931423 AND income>=44324.286368209905 THEN default=0 
+IF age>=34.851817262359 THEN default=0 
+IF age>=34.5964918844402 THEN default=1 
+IF age>=33.8957485635765 THEN default=0 
+IF age>=33.6895613595843 THEN default=1 
+IF age>=33.2456503002904 THEN default=0 
+IF loan<=4859.2352866332 AND age>=32.6760442531668 THEN default=1 
+IF age>=33.0920195085928 THEN default=1 
+IF loan<=4859.2352866332 AND income>=34667.0204005204 THEN default=0 
+IF income<=57787.565658800304 AND loan>=6342.56790924236 THEN default=1 
+IF loan>=8092.982779946221 THEN default=1 
+IF income>=52841.5164374746 AND income>=58828.2921165228 THEN default=0 
+IF loan<=4859.2352866332 AND age>=21.598676353692998 THEN default=0 
+IF age>=24.4157260977663 AND age>=26.854012909811 THEN default=1 
+IF income>=52841.5164374746 THEN default=0 
+IF loan>=5968.4420381087 THEN default=1 
+IF income>=42522.5757574663 THEN default=0 
+IF income>=34635.7447491027 THEN default=1 
+IF income>=32197.6207010448 THEN default=0 
+IF income<=25146.5956843458 AND age>=21.3656869572587 THEN default=1 
+IF income>=26218.4948474169 THEN default=1 
+IF income<=25146.5956843458 THEN default=0 
+IF TRUE THEN default=0 
+
+previsoes = Orange.evaluation.testing.TestOnTestData(base_treinamento, base_teste, [lambda testdata: regras_credit])
+print(previsoes)
+<Orange.evaluation.testing.Results at 0x7f85496cf670>
+
+print(Orange.evaluation.CA(previsoes))
+array([0.964])
+```
+
+
+
+
+
 
 
