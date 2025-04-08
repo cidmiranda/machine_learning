@@ -1001,6 +1001,6 @@ Teoria sobre indução de regras - algoritmo OneR e PRISM
 Árvores de decisão x regras  
 Regras(CN2) com orange  
 
-## Algoritmo OneR
-* Testar coisas simples primeiro
-* Um atributo faz todo o trabalho
+### Base de crédito  
+
+

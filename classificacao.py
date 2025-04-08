@@ -4,6 +4,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import plotly.express as px
 import pickle
+import Orange
 
 from sklearn import tree
 from sklearn.ensemble import RandomForestClassifier
@@ -231,5 +232,7 @@ random_forest_credit.fit(X_credit_treinamento, y_credit_treinamento)
 previsoes = random_forest_credit.predict(X_credit_teste)
 #print(previsoes)
 #print(y_credit_teste)
-accuracy = accuracy_score(y_credit_teste, previsoes)
-print(accuracy)
+#accuracy = accuracy_score(y_credit_teste, previsoes)
+#print(accuracy)
+base_risco_credito = Orange.data.Table('risco_credito_regras.csv')
+#print(base_risco_credito.head())
