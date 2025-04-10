@@ -1094,6 +1094,8 @@ print(Orange.evaluation.CA(previsoes))
 array([0.964])
 ```
 
+##
+
 
 
 
